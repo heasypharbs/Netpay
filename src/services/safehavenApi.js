@@ -1,7 +1,5 @@
-// services/safehavenmfb.js
 const axios = require("axios");
 
-// Configure the SafeHaven API client
 const safehavenmfb = axios.create({
   baseURL: process.env.SAFEHAVEN_API_URL,
   headers: {
@@ -10,7 +8,6 @@ const safehavenmfb = axios.create({
   },
 });
 
-// Add methods for different API endpoints
 const safehavenService = {
   createAccount: (params) => {
     return safehavenmfb.post("/accounts", params);
@@ -20,7 +17,6 @@ const safehavenService = {
     return safehavenmfb.get(`/accounts/${accountId}`);
   },
 
-  // Add other SafeHaven API methods as needed
   fundAccount: (accountId, amount) => {
     return safehavenmfb.post(`/accounts/${accountId}/fund`, { amount });
   },

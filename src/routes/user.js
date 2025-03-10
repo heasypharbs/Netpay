@@ -37,12 +37,9 @@ router.put("/profile", authMiddleware, async (req, res) => {
       });
     }
 
-    // Build update object with only provided fields
     const updateFields = {};
     if (first_name) updateFields.first_name = first_name;
     if (last_name) updateFields.last_name = last_name;
-
-    // Find and update the user
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
       updateFields,
@@ -52,7 +49,6 @@ router.put("/profile", authMiddleware, async (req, res) => {
       }
     ).select("-password");
 
-    // Check if user exists
     if (!updatedUser) {
       return res.status(404).json({
         message: "User account no longer exists in the database",
@@ -65,8 +61,6 @@ router.put("/profile", authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating user profile:", error);
-
-    // Handle validation errors
     if (error.name === "ValidationError") {
       const validationErrors = Object.values(error.errors).map(
         (err) => err.message
@@ -76,15 +70,12 @@ router.put("/profile", authMiddleware, async (req, res) => {
         errors: validationErrors,
       });
     }
-
-    // Handle cast errors (invalid ID format)
     if (error.name === "CastError") {
       return res.status(400).json({
         message: "Invalid user ID format in authentication token",
       });
     }
 
-    // Handle other errors
     res.status(500).json({
       message: "Failed to update profile",
       error: error.message,

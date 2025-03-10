@@ -1,18 +1,16 @@
 const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
-const safehavenmfb = require("../services/safehavenmfb");
+const safehavenmfb = require("../services/safehavenApi");
 const User = require("../models/User");
 
 const router = express.Router();
 
 router.post("/virtual-account", authMiddleware, async (req, res) => {
   try {
-    // Use the documented API approach with accountType parameter
     const { data } = await safehavenmfb.createAccount({
       accountType: "Savings",
     });
 
-    // Update user with the virtual account number from response
     await User.findByIdAndUpdate(req.user.id, {
       virtualAccountNumber: data.accountNumber,
     });
